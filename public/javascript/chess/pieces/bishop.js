@@ -24,8 +24,7 @@ Bishop.prototype.isValidPosition = function(targetPosition){
 
 Bishop.prototype.move = function(newPosition){
     if (this.isValidPosition(newPosition)) {
-        this.position = newPosition.col + newPosition.row;
-        this.render();
+        this.position = newPosition;
     } else {
         console.error("Invalid move for bishop");
     }
