@@ -1,1 +1,1 @@
-Chess implementation using Advanced JavaScript comcepts
+Chess implementation using Advanced JavaScript concepts
