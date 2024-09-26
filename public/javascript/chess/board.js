@@ -3,6 +3,7 @@ var Board = function(config){
     this.$el = document.getElementById(this.root_id);
     this.generateBoardDom();
     this.addListeners();
+    this.turn = "white";
 }
 
 Board.prototype.addListeners = function(){
@@ -62,12 +63,22 @@ Board.prototype.boardClicked = function(event){
     const clickedCell = this.getClickedBlock(event);
     const selectedPiece = this.getPieceAt(clickedCell)
     if(selectedPiece){
+        if (selectedPiece.color !== this.turn) {
+            console.warn("It's not your turn.");
+            return;
+        } else{
+            if(this.turn==="white"){
+                this.turn="black";
+            }else{
+                this.turn="white";
+            }
+        }
         //Add 'selected' class to the clicked piece    
         this.selectPiece(event.target, selectedPiece);
     }else{
         //update position of the selected piece to new position
         if(this.selectedPiece){
-            this.selectedPiece.moveTo(clickedCell);        
+            this.selectedPiece.moveTo(clickedCell, this);        
         }                
     }    
 }
