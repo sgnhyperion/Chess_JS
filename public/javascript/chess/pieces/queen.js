@@ -1,51 +1,51 @@
 
-var ChessQueen = function(config, chessBoard) {
-    this.pieceType = 'queen';
-    this.chessBoard = chessBoard; // Keep a reference to the board
-    this.initialize(config);
+var Queen = function(config, board) {
+    this.type = 'queen';
+    this.board = board; // Store a reference to the board
+    this.constructor(config);
 };
 
-ChessQueen.prototype = new Piece({});
+Queen.prototype = new Piece({});
 
-ChessQueen.prototype.isMoveValid = function(destination) {
-    let startColumn = this.position.charCodeAt(0) - 65; // Convert A-H to 0-7
-    let startRow = parseInt(this.position.charAt(1)) - 1; // Convert 1-8 to 0-7
-    let endColumn = destination.col.charCodeAt(0) - 65;
-    let endRow = parseInt(destination.row) - 1;
+Queen.prototype.isValidMove = function(targetPosition) {
+    let currentCol = this.position.charCodeAt(0) - 65; // Convert A-H to 0-7
+    let currentRow = parseInt(this.position.charAt(1)) - 1; // Convert 1-8 to 0-7
+    let targetCol = targetPosition.col.charCodeAt(0) - 65;
+    let targetRow = parseInt(targetPosition.row) - 1;
 
-    // Validate if the move is horizontal, vertical, or diagonal
-    let columnDifference = Math.abs(endColumn - startColumn);
-    let rowDifference = Math.abs(endRow - startRow);
+    // Check if the move is horizontal, vertical, or diagonal
+    let colDiff = Math.abs(targetCol - currentCol);
+    let rowDiff = Math.abs(targetRow - currentRow);
     
-    if (!(columnDifference === 0 || rowDifference === 0 || columnDifference === rowDifference)) {
+    if (!(colDiff === 0 || rowDiff === 0 || colDiff === rowDiff)) {
         console.warn("Invalid move for queen: not horizontal, vertical, or diagonal");
         return false;
     }
 
-    // Determine the direction of movement
-    let colIncrement = startColumn === endColumn ? 0 : (endColumn > startColumn ? 1 : -1);
-    let rowIncrement = startRow === endRow ? 0 : (endRow > startRow ? 1 : -1);
+    // Determine direction of movement
+    let colStep = currentCol === targetCol ? 0 : (targetCol > currentCol ? 1 : -1);
+    let rowStep = currentRow === targetRow ? 0 : (targetRow > currentRow ? 1 : -1);
 
-    // Check for blocking pieces
-    let col = startColumn + colIncrement;
-    let row = startRow + rowIncrement;
-    while (col !== endColumn || row !== endRow) {
-        let blockingPiece = this.chessBoard.getPieceAt({
+    // Check for pieces blocking the path
+    let col = currentCol + colStep;
+    let row = currentRow + rowStep;
+    while (col !== targetCol || row !== targetRow) {
+        let pieceInPath = this.board.getPieceAt({
             col: String.fromCharCode(col + 65),
             row: (row + 1).toString()
         });
-        if (blockingPiece) {
+        if (pieceInPath) {
             console.warn("Invalid move for queen: piece blocking path");
             return false;
         }
-        col += colIncrement;
-        row += rowIncrement;
+        col += colStep;
+        row += rowStep;
     }
 
-    // Check if a piece is at the target position
-    let targetPiece = this.chessBoard.getPieceAt(destination);
-    if (targetPiece) {
-        if (targetPiece.color === this.color) {
+    // Check if there's a piece at the target position
+    let pieceAtTarget = this.board.getPieceAt(targetPosition);
+    if (pieceAtTarget) {
+        if (pieceAtTarget.color === this.color) {
             console.warn("Invalid move for queen: cannot capture own piece");
             return false;
         } else {
@@ -53,30 +53,30 @@ ChessQueen.prototype.isMoveValid = function(destination) {
         }
     }
 
-    return true; // Move is valid
+    return true; // Valid move
 };
 
-ChessQueen.prototype.moveToPosition = function(destination) {
-    const moveResult = this.isMoveValid(destination);
-    if (moveResult === true) {
-        // Update queen's position
-        this.position = destination.col + destination.row;
+Queen.prototype.moveTo = function(targetPosition) {
+    const result = this.isValidMove(targetPosition);
+    if (result === true) {
+        // Move the queen to the new position
+        this.position = targetPosition.col + targetPosition.row;
         this.render();
         return true;
-    } else if (moveResult === 'capture') {
+    } else if (result === 'capture') {
         // Capture the piece and move
-        let pieceToCapture = this.chessBoard.getPieceAt(destination);
+        let pieceToCapture = this.board.getPieceAt(targetPosition);
         if (pieceToCapture) {
-            pieceToCapture.eliminate();
+            pieceToCapture.kill();
         }
-        this.position = destination.col + destination.row;
+        this.position = targetPosition.col + targetPosition.row;
         this.render();
         return true;
     }
-    return false; // Move is invalid
+    return false; // Invalid move
 };
 
-ChessQueen.prototype.eliminate = function() {
+Queen.prototype.kill = function() {
     if (this.$el && this.$el.parentNode) {
         this.$el.parentNode.removeChild(this.$el);
     }
