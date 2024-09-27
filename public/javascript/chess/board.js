@@ -134,7 +134,7 @@ Board.prototype.initiateGame = function() {
     // Create white pieces
     this.whitePieces = {
         king: new King({ color: 'white', position: 'E1' }),
-        queen: new Queen({ color: 'white', position: 'D1' }),
+        queen: new Queen({ color: 'white', position: 'D1' }, this),
         bishops: [
             new Bishop({ color: 'white', position: 'C1' }),
             new Bishop({ color: 'white', position: 'F1' })
@@ -158,7 +158,7 @@ Board.prototype.initiateGame = function() {
     // Create black pieces
     this.blackPieces = {
         king: new King({ color: 'black', position: 'E8' }),
-        queen: new Queen({ color: 'black', position: 'D8' }),
+        queen: new Queen({ color: 'black', position: 'D8' }, this),
         bishops: [
             new Bishop({ color: 'black', position: 'C8' }),
             new Bishop({ color: 'black', position: 'F8' })
