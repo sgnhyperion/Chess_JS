@@ -3,7 +3,6 @@ var Board = function(config){
     this.$el = document.getElementById(this.root_id);
     this.generateBoardDom();
     this.addListeners();
-    this.turn = "white";
 }
 
 Board.prototype.addListeners = function(){
@@ -63,22 +62,12 @@ Board.prototype.boardClicked = function(event){
     const clickedCell = this.getClickedBlock(event);
     const selectedPiece = this.getPieceAt(clickedCell)
     if(selectedPiece){
-        if (selectedPiece.color !== this.turn) {
-            console.warn("It's not your turn.");
-            return;
-        } else{
-            if(this.turn==="white"){
-                this.turn="black";
-            }else{
-                this.turn="white";
-            }
-        }
         //Add 'selected' class to the clicked piece    
         this.selectPiece(event.target, selectedPiece);
     }else{
         //update position of the selected piece to new position
         if(this.selectedPiece){
-            this.selectedPiece.moveTo(clickedCell, this);        
+            this.selectedPiece.moveTo(clickedCell);        
         }                
     }    
 }
@@ -145,7 +134,7 @@ Board.prototype.initiateGame = function() {
     // Create white pieces
     this.whitePieces = {
         king: new King({ color: 'white', position: 'E1' }),
-        queen: new Queen({ color: 'white', position: 'D1' }, this),
+        queen: new Queen({ color: 'white', position: 'D1' }),
         bishops: [
             new Bishop({ color: 'white', position: 'C1' }),
             new Bishop({ color: 'white', position: 'F1' })
@@ -169,7 +158,7 @@ Board.prototype.initiateGame = function() {
     // Create black pieces
     this.blackPieces = {
         king: new King({ color: 'black', position: 'E8' }),
-        queen: new Queen({ color: 'black', position: 'D8' }, this),
+        queen: new Queen({ color: 'black', position: 'D8' }),
         bishops: [
             new Bishop({ color: 'black', position: 'C8' }),
             new Bishop({ color: 'black', position: 'F8' })
