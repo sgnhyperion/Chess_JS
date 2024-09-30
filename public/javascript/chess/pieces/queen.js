@@ -1,11 +1,12 @@
-
 var Queen = function(config, board) {
     this.type = 'queen';
     this.board = board; // Store a reference to the board
-    this.constructor(config);
+    Piece.call(this, config); // Use Piece.call to inherit properties from Piece
 };
 
-Queen.prototype = new Piece({});
+// Ensure the prototype chain is properly set up
+Queen.prototype = Object.create(Piece.prototype);
+Queen.prototype.constructor = Queen;
 
 Queen.prototype.isValidMove = function(targetPosition) {
     let currentCol = this.position.charCodeAt(0) - 65; // Convert A-H to 0-7
@@ -16,7 +17,7 @@ Queen.prototype.isValidMove = function(targetPosition) {
     // Check if the move is horizontal, vertical, or diagonal
     let colDiff = Math.abs(targetCol - currentCol);
     let rowDiff = Math.abs(targetRow - currentRow);
-    
+
     if (!(colDiff === 0 || rowDiff === 0 || colDiff === rowDiff)) {
         console.warn("Invalid move for queen: not horizontal, vertical, or diagonal");
         return false;
@@ -74,11 +75,4 @@ Queen.prototype.moveTo = function(targetPosition) {
         return true;
     }
     return false; // Invalid move
-};
-
-Queen.prototype.kill = function() {
-    if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el);
-    }
-    this.position = null;
 };
