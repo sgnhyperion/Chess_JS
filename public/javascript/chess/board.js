@@ -66,18 +66,17 @@ Board.prototype.boardClicked = function(event){
         if (selectedPiece.color !== this.turn) {
             console.warn("It's not your turn.");
             return;
-        } else{
-            if(this.turn==="white"){
-                this.turn="black";
-            }else{
-                this.turn="white";
-            }
         }
         //Add 'selected' class to the clicked piece    
         this.selectPiece(event.target, selectedPiece);
     }else{
         //update position of the selected piece to new position
         if(this.selectedPiece){
+            if(this.turn==="white"){
+                this.turn="black";
+            }else{
+                this.turn="white";
+            }
             this.selectedPiece.moveTo(clickedCell, this);        
         }                
     }    
